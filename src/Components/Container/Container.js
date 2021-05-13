@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import axios from 'axios'
 import './Container.css'
 import Treasure from '../Treasure'
 
@@ -18,15 +19,50 @@ export default class Container extends Component {
   }
 
   getDragonTreasure() {
-    // axios GET to /api/treasure/dragon here
+    axios
+      .get('/api/treasure/dragon')
+      .then((res) => {
+        this.setState({
+          treasures: {
+            ...this.state.treasures, 
+            dragon: res.data
+          }
+        })
+      })
+      .catch((err) => console.log(err))
   }
 
   getAllTreasure() {
-    // axios GET to /api/treasure/all here
+    console.log('word')
+    const {treasures} = this.state
+    axios
+      .get('/api/treasure/all')
+      .then((res) => {
+        console.log(res.data, 'sentence')
+        this.setState({
+          treasures: {
+            ...treasures,
+            all: res.data
+          }
+        })
+      })
+      .catch((err) => alert(err.response.request.response))
   }
 
   getMyTreasure() {
-    // axios GET to /api/treasure/user here
+    axios
+      .get('/api/treasure/user')
+      .then((treasure) => {
+        this.setState({
+          treasures: {
+            ...this.state.treasures,
+            user: treasure.data
+          }
+        })
+      })
+      .catch((err) => {
+        alert(err.response.request.response) //'please login' alert pop up
+      })
   }
 
   addMyTreasure(newMyTreasure) {
@@ -41,6 +77,8 @@ export default class Container extends Component {
   render() {
     const { username } = this.props.user
     const { dragon, user, all } = this.state.treasures
+    console.log(this.props.user)
+    console.log(all)
     return (
       <div className="Container">
         {dragon ? (
